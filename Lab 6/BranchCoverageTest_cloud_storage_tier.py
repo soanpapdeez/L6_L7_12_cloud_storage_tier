@@ -50,3 +50,9 @@ def test_audit_flagged():
 
 def test_sync_lag_alert():
     assert monitor_replication_latency([[100, 250, 300]]) == "SYNC_LAG_ALERT"
+def test_negative_size_and_unknown_tier_flag():
+    r = process_storage_tenants([t("weird", [b(10)]), t("hot", [b(-5)])], 0)
+    assert r["status"] == "ZERO_USAGE"
+
+def test_lag_resets_then_clean_node():
+    assert monitor_replication_latency([[300, 100, 100]]) == "SYNCED"
